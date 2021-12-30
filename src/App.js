@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 
 const schedule = {
   "title": "CS Courses for 2018-2019",
@@ -15,13 +16,13 @@ const schedule = {
     },
     "CLASSICS211" : {
       "id" : "FCLASSICS211",
-      "meets" : "MW 1:30-12:50, F 12:00-12:50",
+      "meets" : "MWF 1:30-12:50, F 12-12:50",
       "title" : "Greek and Roman History"
     },
     "CS340" : {
       "id" : "FCS340",
       "meets" : "TuTh 3:30-4:50",
-      "title" : "Introduction to Networking"
+      "title" : "Introduction to Networking"  
     }
   }
 };
@@ -33,17 +34,26 @@ const getCourseTerm = course => (
 );
 
 const getCourseNumber = course => (
-  course.id.slice(1, 5)
+  course.id.slice(1, 6)
+);
+
+const getCourseTime = course => (
+  course.meets
 );
 
 const Course = ({ course }) => (
-  <div>
-    { getCourseTerm(course) } { getCourseNumber(course) }: { course.title }
+  <div className="card m-1 p-2">
+    <div className="card-body">
+      <div className="card-title">{ getCourseTerm(course) } { getCourseNumber(course) }</div>
+      <div className="card-text">{ course.title }</div>
+      <div className="card-time">{ getCourseTime(course) }</div>
+
+    </div>
   </div>
 );
 
 const CourseList = ({ courses }) => (
-  <div>
+  <div className="course-list">
     { Object.values(courses).map(course => <Course key={course.id} course={ course } />) }
   </div>
 );
@@ -53,7 +63,7 @@ const Banner = ({ title }) => (
 );
 
 const App = () =>  (
-  <div>
+  <div className="container">
     <Banner title={ schedule.title } />
     <CourseList courses={ schedule.courses } />
   </div>
