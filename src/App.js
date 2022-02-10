@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-/*
-const schedule = {
+
+const schedule_2 = {
   "title": "CS Courses for 2018-2019",
   "courses": {
     "CS394" : {
@@ -26,7 +26,7 @@ const schedule = {
     }
   }
 };
-*/
+
 
 const terms = { F: 'Fall', W: 'Winter', S: 'Spring'};
 
@@ -114,7 +114,7 @@ const TermButton = ({term, setTerm, checked}) => (
   <>
     <input type="radio" id={term} className="btn-check" checked={checked} autoComplete="off"
       onChange={() => setTerm(term)} />
-    <label class="btn btn-success m-1 p-2" htmlFor={term}>
+    <label className="btn btn-success m-1 p-2" htmlFor={term}>
     { term }
     </label>
   </>
@@ -159,13 +159,16 @@ const Banner = ({ title }) => (
 );
 
 const App = () => {
-  const [schedule, setSchedule] = useState();
+  const [schedule, setSchedule] = useState(schedule_2);
   const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php';
 
   useEffect(() => {
     const fetchSchedule = async () => {
       const response = await fetch(url);
-      if (!response.ok) throw response;
+      if (!response.ok) {
+        throw response;
+      }
+      console.log(response);
       const json = await response.json();
       setSchedule(addScheduleTimes(json));
     }
