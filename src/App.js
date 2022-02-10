@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import { hasConflict, getCourseTerm, terms, addScheduleTimes } from './utilities/time.js';
+import { addScheduleTimes } from './utilities/time.js';
 import { CourseList } from './components/CourseList.js';
+import { useData } from './utilities/firebase.js';
 
 const schedule_2 = {
   "title": "CS Courses for 2018-2019",
@@ -29,54 +30,15 @@ const schedule_2 = {
   }
 };
 
-
-const getCourseNumber = course => (
-  course.id.slice(1, 6)
-);
-
-export const Course = ({ course, selected, setSelected }) => {
-  const isSelected = selected.includes(course);
-  const isDisabled = !isSelected && hasConflict(course, selected);
-  const style = {
-    backgroundColor: isDisabled? 'lightgrey' : isSelected ? 'lightgreen' : 'white'
-  };
-  return (
-    <div className="card m-1 p-2" 
-      style={style}
-      onClick={isDisabled ? null : () =>  setSelected(toggle(course, selected))}>
-      <div className="card-body">
-        <div className="card-title">{ getCourseTerm(course) } CS { getCourseNumber(course) }</div>
-        <div className="card-text">{ course.title }</div>
-      </div>
-    </div>
-  );
-};
-
-
-const toggle = (x, lst) => (
-  lst.includes(x) ? lst.filter(y => y !== x) : [x, ...lst]
-);
-
 const Banner = ({ title }) => (
   <h1>{ title }</h1>
 );
 
 const App = () => {
-  const [schedule, setSchedule] = useState(schedule_2);
-  const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php';
-
-  useEffect(() => {
-    const fetchSchedule = async () => {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw response;
-      }
-      console.log(response);
-      const json = await response.json();
-      setSchedule(addScheduleTimes(json));
-    }
-    fetchSchedule();
-  }, [])
+  const [schedule, loading, error] = useData('/', addScheduleTimes); 
+  
+  if (error) return <h1>{error}</h1>;
+  if (loading) return <h1>Loading the schedule...</h1>
 
   return (
     <div className="container">
